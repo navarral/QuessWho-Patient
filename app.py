@@ -362,9 +362,9 @@ tabs = dbc.Tabs(
 
 # Normally, Dash creates its own Flask server internally. By creating our own,
 # we can create a route for downloading files directly:
-#server = Flask(__name__)
+server = Flask(__name__)
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], server=server)
 
 app.title = 'Guess the patient'
 app.layout = html.Div([tabs])
