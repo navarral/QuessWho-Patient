@@ -1,24 +1,17 @@
-import plotly.express as px
+
 from PIL import Image
 import base64
 from io import BytesIO as _BytesIO
-import time
-import numpy
-import plotly.graph_objects as go
 import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_cytoscape as cyto
 import random
-import dash_table
 from dash.dependencies import Input, Output, State, MATCH, ALL
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output
-import plotly.express as px
-import json
-from flask import Flask, send_from_directory, send_file
-import pandas as pd
+from flask import Flask
 import requests
 
 # Import images for the app
@@ -369,9 +362,9 @@ tabs = dbc.Tabs(
 
 # Normally, Dash creates its own Flask server internally. By creating our own,
 # we can create a route for downloading files directly:
-server = Flask(__name__)
+#server = Flask(__name__)
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], server=server)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 app.title = 'Guess the patient'
 app.layout = html.Div([tabs])
@@ -486,4 +479,4 @@ def nextRoundButtonClick(rightAnswer_Ok, rightAnswer_Cancel):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
