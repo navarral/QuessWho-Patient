@@ -111,29 +111,29 @@ nodes = [
     }
     for short, nx, ny in (
         # First row
-        ('a11', 63, 80),
-        ('a12', 63 + 119 * 1, 80),
-        ('a13', 63 + 119 * 2, 80),
-        ('a14', 63 + 119 * 3, 80),
-        ('a15', 63 + 119 * 4, 80),
+        ('a11', 60, 80),
+        ('a12', 60 + 118 * 1, 80),
+        ('a13', 60 + 118 * 2, 80),
+        ('a14', 60 + 118 * 3, 80),
+        ('a15', 60 + 118 * 4, 80),
         # Second row
-        ('a21', 63, 80 + 134 * 1),
-        ('a22', 63 + 119 * 1, 80 + 134 * 1),
-        ('a23', 63 + 119 * 2, 80 + 134 * 1),
-        ('a24', 63 + 119 * 3, 80 + 134 * 1),
-        ('a25', 63 + 119 * 4, 80 + 134 * 1),
+        ('a21', 60, 80 + 128 * 1),
+        ('a22', 60 + 118 * 1, 80 + 128 * 1),
+        ('a23', 60 + 118 * 2, 80 + 128 * 1),
+        ('a24', 60 + 118 * 3, 80 + 128 * 1),
+        ('a25', 60 + 118 * 4, 80 + 128 * 1),
         # Third row
-        ('a31', 63, 80 + 134 * 2),
-        ('a32', 63 + 119 * 1, 80 + 134 * 2),
-        ('a33', 63 + 119 * 2, 80 + 134 * 2),
-        ('a34', 63 + 119 * 3, 80 + 134 * 2),
-        ('a35', 63 + 119 * 4, 80 + 134 * 2),
+        ('a31', 60, 80 + 130 * 2),
+        ('a32', 60 + 118 * 1, 80 + 130 * 2),
+        ('a33', 60 + 118 * 2, 80 + 130 * 2),
+        ('a34', 60 + 118 * 3, 80 + 130 * 2),
+        ('a35', 60 + 118 * 4, 80 + 130 * 2),
         # Forth row
-        ('a41', 63, 80 + 134 * 3),
-        ('a42', 63 + 119 * 1, 80 + 134 * 3),
-        ('a43', 63 + 119 * 2, 80 + 134 * 3),
-        ('a44', 63 + 119 * 3, 80 + 134 * 3),
-        ('a45', 63 + 119 * 4, 80 + 134 * 3),
+        ('a41', 60, 80 + 132 * 3),
+        ('a42', 60 + 119 * 1, 80 + 132 * 3),
+        ('a43', 60 + 119 * 2, 80 + 132 * 3),
+        ('a44', 60 + 119 * 3, 80 + 132 * 3),
+        ('a45', 60 + 119 * 4, 80 + 132 * 3),
     )
 ]
 
@@ -170,11 +170,9 @@ node_stylesheet = [
 ]
 
 graphConfigDict = {
-    # 'displayModeBar': False,
     'doubleClick': False,
     'editable': False,
     'scrollZoom': False,
-    # 'staticPlot': True,
 }
 
 frCard_Grid = dbc.Card(
@@ -193,7 +191,7 @@ frCard_Grid = dbc.Card(
             ),
         ], style={
             'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
-            'background-size': '600px 550px',
+            'background-size': '37em 34em', #'600px 550px'
             'background-repeat': 'no-repeat',
             # 'marginBottom': '-5em'
         }, ),
@@ -268,7 +266,7 @@ srCard_Grid = dbc.Card(
                 ),
             ], style={
                 'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid.jpg)',
-                'background-size': '600px 550px',
+                'background-size': '37em 34em', #'600px 550px'
                 'background-repeat': 'no-repeat',
                 # 'marginBottom': '-5em'
             }, ),
@@ -501,4 +499,4 @@ def nextRoundButtonClick(rightAnswer_Ok):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
