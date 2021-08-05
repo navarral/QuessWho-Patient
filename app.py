@@ -1,4 +1,3 @@
-
 from PIL import Image
 import base64
 from io import BytesIO as _BytesIO
@@ -17,8 +16,8 @@ import requests
 # Import images for the app
 pil_img_colour = Image.open('GuessWho_Grid.jpg')
 pil_img_grey = Image.open('GuessWho_Grid_Grey.jpg')
-pil_img_doctor = Image.open(requests.get('https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/DrData.png', stream=True).raw)
-
+pil_img_doctor = Image.open(
+    requests.get('https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/DrData.png', stream=True).raw)
 
 
 def pil_to_b64(im, enc_format='png', **kwargs):
@@ -180,25 +179,24 @@ graphConfigDict = {
 
 frCard_Grid = dbc.Card(
     dbc.CardBody(
-        [
-            html.Div([
-                cyto.Cytoscape(
-                    id='cyto_grey',
-                    elements=nodes,
-                    autoungrabify=False,
-                    autolock=True,
-                    zoom=1,
-                    minZoom=1,
-                    maxZoom=1,
-                    panningEnabled=False,
-                    stylesheet=node_stylesheet,
-                ),
-            ], style={
-                'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
-                'background-size': '600px 550px',
-                'background-repeat': 'no-repeat',
-                # 'marginBottom': '-5em'
-            }, ),
+        [html.Div([
+            cyto.Cytoscape(
+                id='cyto_grey',
+                elements=nodes,
+                autoungrabify=False,
+                autolock=True,
+                zoom=1,
+                minZoom=1,
+                maxZoom=1,
+                panningEnabled=False,
+                stylesheet=node_stylesheet,
+            ),
+        ], style={
+            'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
+            'background-size': '600px 550px',
+            'background-repeat': 'no-repeat',
+            # 'marginBottom': '-5em'
+        }, ),
         ]
     ),
     className='mt-3',
@@ -211,18 +209,31 @@ frCard_Doctor = dbc.Card(
             dcc.Markdown(id='hintGrey',
                          className="card-text",
                          ),
+            html.Div([
+                dbc.Alert([
+                    html.H4("Oh that's not the patient!", className='alert-heading'),
+                    html.P('Please try again.'),
+                ],
+                    id='wrongChoiceGrey',
+                    dismissable=True,
+                    is_open=False,
+                    color='danger',
+                    duration=2000,
+                ),
+                dbc.Alert([
+                    html.H4('Well done!', className='alert-heading'),
+                    html.P("Yes, that's the patient! Thanks for your help."),
+                ],
+                    id='rightChoiceGrey',
+                    dismissable=False,
+                    is_open=False,
+                    color='success'
+                ),
+            ]),
             dbc.CardImg(id='grey_doctor', className='image',
                         src='data:image/png;base64, ' + pil_to_b64(pil_img_doctor),
                         style={'height': '50%', 'width': '60%'},
                         bottom=True),
-            dcc.ConfirmDialog(
-                id='wrongChoiceGrey',
-                message='Please try again!',
-            ),
-            dcc.ConfirmDialog(
-                id='rightChoiceGrey',
-                message="Yes, that's the patient! Thanks for your help!",
-            ),
             dbc.Button('Next Round', color='primary', disabled=True,
                        id='nextRound'),
         ]
@@ -273,18 +284,32 @@ srCard_Doctor = dbc.Card(
             dcc.Markdown(id='hintColour',
                          className="card-text",
                          ),
+            html.Div([
+                dbc.Alert([
+                    html.H4("Oh that's not the patient!", className='alert-heading'),
+                    html.P('Please try again.'),
+                ],
+
+                    id='wrongChoiceColour',
+                    dismissable=True,
+                    is_open=False,
+                    color='danger',
+                    duration=2000,
+                ),
+                dbc.Alert(
+                    [
+                        html.H4('Well done!', className='alert-heading'),
+                        html.P("Yes, that's the patient! Thanks for your help."),
+                    ],
+                    id='rightChoiceColour',
+                    dismissable=False,
+                    is_open=False,
+                    color='success'
+                ), ]),
             dbc.CardImg(id='colour_doctor', className='image',
                         src='data:image/png;base64, ' + pil_to_b64(pil_img_doctor),
                         style={'height': '50%', 'width': '60%'},
                         bottom=True),
-            dcc.ConfirmDialog(
-                id='wrongChoiceColour',
-                message='Please try again!',
-            ),
-            dcc.ConfirmDialog(
-                id='rightChoiceColour',
-                message="Yes, that's the patient! Thanks for your help!",
-            ),
             dbc.Button('Conclusion', color='primary', disabled=True,
                        id='concButton'),
         ]
@@ -370,10 +395,9 @@ app.title = 'Guess the patient'
 app.layout = html.Div([tabs])
 
 
-
 @app.callback([Output('rndPatients', 'data'),
-               Output('hintGrey','children'),
-               Output('hintColour','children')],
+               Output('hintGrey', 'children'),
+               Output('hintColour', 'children')],
               [Input('startButton', 'n_clicks')],
               )
 def chooseRndCountryPatient(n_clicks_start):
@@ -400,12 +424,12 @@ def chooseRndCountryPatient(n_clicks_start):
         hintGrey = '''
         Hi! All I know is that the patient is an **adult** that lives in the **''' + rndDict['greyC'] + ''' country** ...
 
-        Please click on the faces on the left and let's how long it takes to find it together!'''
+        Please click on the faces on the left to help me find the patient!'''
 
         hintColour = '''
         Hi! All I know is that the patient is an **adult** that lives in the **''' + rndDict['colourC'] + ''' country** ...
 
-        Please click on the faces on the left and let's how long it takes to find it together!'''
+        Please click on the faces on the left to help me find the patient!'''
 
         return [rndDict, hintGrey, hintColour]
 
@@ -426,8 +450,8 @@ def goToRound1Tab(n_clicks_start, n_clicks_round1, n_clicks_round2):
         return 'tab-3'
 
 
-@app.callback([Output('wrongChoiceGrey', 'displayed'),
-               Output('rightChoiceGrey', 'displayed')],
+@app.callback([Output('wrongChoiceGrey', 'is_open'),
+               Output('rightChoiceGrey', 'is_open')],
               [Input('cyto_grey', 'tapNodeData'),
                Input('rndPatients', 'data')])
 def guessGreyPatient(nodeID_label, rndChoice):
@@ -443,17 +467,16 @@ def guessGreyPatient(nodeID_label, rndChoice):
 
 
 @app.callback([Output('nextRound', 'disabled')],
-              [Input('rightChoiceGrey', 'submit_n_clicks'),
-               Input('rightChoiceGrey', 'cancel_n_clicks')])
-def nextRoundButtonClick(rightAnswer_Ok, rightAnswer_Cancel):
-    if not rightAnswer_Ok and not rightAnswer_Cancel:
+              [Input('rightChoiceGrey', 'is_open')])
+def nextRoundButtonClick(rightAnswer_Ok):
+    if not rightAnswer_Ok:
         return [True]
     else:
         return [False]
 
 
-@app.callback([Output('wrongChoiceColour', 'displayed'),
-               Output('rightChoiceColour', 'displayed')],
+@app.callback([Output('wrongChoiceColour', 'is_open'),
+               Output('rightChoiceColour', 'is_open')],
               [Input('cyto_colour', 'tapNodeData'),
                Input('rndPatients', 'data')])
 def guessGreyPatient(nodeID_label, rndChoice):
@@ -469,14 +492,13 @@ def guessGreyPatient(nodeID_label, rndChoice):
 
 
 @app.callback([Output('concButton', 'disabled')],
-              [Input('rightChoiceColour', 'submit_n_clicks'),
-               Input('rightChoiceColour', 'cancel_n_clicks')])
-def nextRoundButtonClick(rightAnswer_Ok, rightAnswer_Cancel):
-    if not rightAnswer_Ok and not rightAnswer_Cancel:
+              [Input('rightChoiceColour', 'is_open')])
+def nextRoundButtonClick(rightAnswer_Ok):
+    if not rightAnswer_Ok:
         return [True]
     else:
         return [False]
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)
