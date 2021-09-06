@@ -204,7 +204,7 @@ frCard_Grid = dbc.Card(
             ),
         ], style={
             'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
-            'background-size': '37em 34em',  # '600px 550px'
+            'background-size': '80% 90%', #'37em 34em',  # '600px 550px'
             'background-repeat': 'no-repeat',
             # 'marginBottom': '-5em'
         }, ),
@@ -291,7 +291,7 @@ srCard_Grid = dbc.Card(
                 ),
             ], style={
                 'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
-                'background-size': '37em 34em',  # '600px 550px'
+                'background-size': '80% 90%', #'37em 34em',  # '600px 550px'
                 'background-repeat': 'no-repeat',
                 # 'marginBottom': '-5em'
             }, ),
@@ -381,7 +381,7 @@ trCard_Grid = dbc.Card(
                 ),
             ], style={
                 'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid.jpg)',
-                'background-size': '37em 34em',  # '600px 550px'
+                'background-size': '80% 90%', # '37em 34em',  # '600px 550px'
                 'background-repeat': 'no-repeat',
                 # 'marginBottom': '-5em'
             }, ),
