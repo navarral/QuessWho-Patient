@@ -44,13 +44,17 @@ introCard = dbc.CardGroup(
                     dcc.Markdown('''
                     Dr. Data is a researcher in scientific data who needs help finding a patient with a rare 
                     disease. The doctor has a group of 20 patients but she can only have access to certain information 
-                    because the patients identity needs to remain secret.           
+                    because the patients identity needs to remain secret.
+                    
+                    You will have **5** attempts to help Dr. Data in each round      
                     ''',
                                  className="card-text",
                                  ),
                     dbc.Button("Let's start!", color='primary', id='startButton'),
-                    # Store random patient selection
-                    dcc.Store(id='rndPatients')
+                    # Store random patient selection on every page refresh
+                    dcc.Store(id='rndPatients'),
+                    # Store total number of participants
+                    dcc.Store(id='appInfo', storage_type='local'),
                 ]
             )
         ),
@@ -70,7 +74,6 @@ introCard = dbc.CardGroup(
 ackCard = dbc.Card([
     dbc.CardBody(
         [
-            # html.H4('Collaborators', className='card-title'),
             dcc.Markdown('''
             This research was conducted with the financial support of [HELICAL](https://helical-itn.eu/) as part of the European Union’s 
             Horizon 2020 research and innovation programme under the Marie Sklodowska-Curie Grant Agreement 
@@ -100,7 +103,21 @@ introTab = html.Div([
             dbc.Col(ackCard, width=10),
             dbc.Col(width=1),
         ]
-    )
+    ),
+    dbc.Row(
+        [
+            dbc.Col(width=1),
+            dbc.Col(
+                dbc.Card([
+                    dbc.CardBody([
+                        dcc.Markdown(id='appInfoText', style={'font-size': '14px'},
+                                     className='card-text'),
+                        html.Div(style={'margin-bottom': '-1em'})
+                    ])
+                ]), width=10),
+            dbc.Col(width=1),
+        ]
+    ),
 
 ])
 
@@ -137,31 +154,21 @@ nodes = [
     )
 ]
 
-# Country possibilities
+# Country possibilities (rows)
 countryColour = ['Blue', 'Yellow', 'Green', 'Pink']
-# Select only adults
+
+# Select only teenagers or adults
 nodesIDsMatrix = {'Blue': ['a12', 'a13', 'a14', 'a15'],
                   'Yellow': ['a22', 'a23', 'a24', 'a25'],
                   'Green': ['a32', 'a33', 'a34', 'a35'],
                   'Pink': ['a42', 'a43', 'a44', 'a45']}
 
+# Select only teenagers or adults by sex
 nodesIDsMatrix2 = {'Blue': {'male': ['a12', 'a13', 'a14', 'a15']},
                    'Yellow': {'male': ['a22', 'a23', 'a24', 'a25']},
                    'Green': {'female': ['a32', 'a33', 'a34', 'a35']},
                    'Pink': {'female': ['a42', 'a43', 'a44', 'a45']}}
 
-'''
-# Randomly select country and patient for Grey view
-rndCountry_Grey = random.choice(countryColour)
-rightPatient_Grey = random.choice(nodesIDsMatrix[rndCountry_Grey])
-
-# Randomly select country and patient for Colour view
-rndCountry_Colour = random.choice(countryColour)
-rightPatient_Colour = random.choice(nodesIDsMatrix[rndCountry_Colour])
-
-print('grey:', rightPatient_Grey)
-print('colour:', rightPatient_Colour)
-'''
 node_stylesheet = [
     {
         'selector': 'node',
@@ -217,6 +224,7 @@ frCard_Doctor = dbc.Card(
                 dbc.Alert([
                     html.H4("Oh that's not the patient!", className='alert-heading'),
                     html.P('Please try again.'),
+                    html.P(id='greyAttempsLeft'),
                 ],
                     id='wrongChoiceGrey',
                     dismissable=True,
@@ -233,13 +241,24 @@ frCard_Doctor = dbc.Card(
                     is_open=False,
                     color='success'
                 ),
+                dbc.Alert([
+                    html.H4('No more attempts left!', className='alert-heading'),
+                    html.P("Sorry but your help was not enough to find the patient. Please go to the next round."),
+                ],
+                    id='noAttChoiceGrey',
+                    dismissable=False,
+                    is_open=False,
+                    color='warning'
+                ),
             ]),
             dbc.CardImg(id='grey_doctor', className='image',
                         src='data:image/png;base64, ' + pil_to_b64(pil_img_doctor),
                         style={'height': '50%', 'width': '60%'},
                         bottom=True),
             dbc.Button('Next Round', color='primary', disabled=True,
-                       id='nextRound'),
+                       id='greyButton'),
+            # Number of attempts left for the first round
+            dcc.Store(id='greyAttempts'),
         ]
     ),
 
@@ -292,6 +311,8 @@ srCard_Doctor = dbc.Card(
                 dbc.Alert([
                     html.H4("Oh that's not the patient!", className='alert-heading'),
                     html.P('Please try again.'),
+                    html.P(id='grey2AttempsLeft'),
+
                 ],
 
                     id='wrongChoiceGrey2',
@@ -309,13 +330,25 @@ srCard_Doctor = dbc.Card(
                     dismissable=False,
                     is_open=False,
                     color='success'
-                ), ]),
+                ),
+                dbc.Alert([
+                    html.H4('No more attempts left!', className='alert-heading'),
+                    html.P("Sorry but your help was not enough to find the patient. Please go to the next round."),
+                ],
+                    id='noAttChoiceGrey2',
+                    dismissable=False,
+                    is_open=False,
+                    color='warning'
+                ),
+            ]),
             dbc.CardImg(id='grey2_doctor', className='image',
                         src='data:image/png;base64, ' + pil_to_b64(pil_img_doctor),
                         style={'height': '50%', 'width': '60%'},
                         bottom=True),
             dbc.Button('Next Round', color='primary', disabled=True,
                        id='grey2Button'),
+            # Number of attempts left for the second round
+            dcc.Store(id='grey2Attempts'),
         ]
     ),
 
@@ -368,6 +401,7 @@ trCard_Doctor = dbc.Card(
                 dbc.Alert([
                     html.H4("Oh that's not the patient!", className='alert-heading'),
                     html.P('Please try again.'),
+                    html.P(id='colourAttempsLeft'),
                 ],
 
                     id='wrongChoiceColour',
@@ -385,13 +419,25 @@ trCard_Doctor = dbc.Card(
                     dismissable=False,
                     is_open=False,
                     color='success'
-                ), ]),
+                ),
+                dbc.Alert([
+                    html.H4('No more attempts left!', className='alert-heading'),
+                    html.P("Sorry but your help was not enough to find the patient. Please go to the next round."),
+                ],
+                    id='noAttChoiceColour',
+                    dismissable=False,
+                    is_open=False,
+                    color='warning'
+                ),
+            ]),
             dbc.CardImg(id='colour_doctor', className='image',
                         src='data:image/png;base64, ' + pil_to_b64(pil_img_doctor),
                         style={'height': '50%', 'width': '60%'},
                         bottom=True),
             dbc.Button('Conclusion', color='primary', disabled=True,
                        id='concButton'),
+            # Number of attempts left for the third round
+            dcc.Store(id='colourAttempts'),
         ]
     ),
 
@@ -416,7 +462,9 @@ concCard = dbc.CardGroup(
                     dcc.Markdown('''
                     Today we learnt that people diagnosed with a rare disease are at an increased
                     risk of identification from research data because linking of a couple of factors may expose
-                    the patient's identity (Round 3). However, if the adequate data protection regulations are applied
+                    the patient's identity (Round 3). 
+                    
+                    However, if the adequate data protection regulations are applied
                     researchers can conduct their research safely (Rounds 1 and 2).         
                     ''',
                                  className="card-text",
@@ -483,7 +531,7 @@ app.layout = html.Div([tabs])
               [Input('startButton', 'n_clicks')],
               )
 def chooseRndCountryPatient(n_clicks_start):
-    if n_clicks_start != 1:
+    if not n_clicks_start:
         raise PreventUpdate
     else:
         # Randomly select country and patient for Grey view
@@ -492,7 +540,8 @@ def chooseRndCountryPatient(n_clicks_start):
 
         # Randomly select country and patient for Grey 2 view
         rndCountry_Grey2 = random.choice(countryColour)
-        rightPatient_Grey2 = random.choice(nodesIDsMatrix2[rndCountry_Grey2][str(list(nodesIDsMatrix2[rndCountry_Grey2].keys())[0])])
+        rightPatient_Grey2 = random.choice(
+            nodesIDsMatrix2[rndCountry_Grey2][str(list(nodesIDsMatrix2[rndCountry_Grey2].keys())[0])])
 
         # Randomly select country and patient for Colour view
         rndCountry_Colour = random.choice(countryColour)
@@ -501,6 +550,7 @@ def chooseRndCountryPatient(n_clicks_start):
         print('grey:', rightPatient_Grey)
         print('grey2:', rightPatient_Grey2)
         print('colour:', rightPatient_Colour)
+
         # Store country and patient choice in a dict that will refresh as the page is refreshed
         rndDict = {
             'greyC': rndCountry_Grey,
@@ -517,7 +567,8 @@ def chooseRndCountryPatient(n_clicks_start):
         Please click on the faces on the left to help me find the patient!'''
 
         hintGrey2 = '''
-        Hi! All I know is that the patient is a **''' + rndDict['grey2S'] + '''** **teenager or adult** that lives in the **''' + \
+        Hi! All I know is that the patient is a **''' + rndDict[
+            'grey2S'] + '''** **teenager or adult** that lives in the **''' + \
                     rndDict['grey2C'] + ''' country** ...
 
         Please click on the faces on the left to help me find the patient!'''
@@ -532,10 +583,9 @@ def chooseRndCountryPatient(n_clicks_start):
 
 @app.callback(Output('tabsID', 'active_tab'),
               [Input('startButton', 'n_clicks'),
-               Input('nextRound', 'n_clicks'),
+               Input('greyButton', 'n_clicks'),
                Input('grey2Button', 'n_clicks'),
-               Input('concButton', 'n_clicks')],
-              )
+               Input('concButton', 'n_clicks')])
 def goToRound1Tab(n_clicks_start, n_clicks_round1, n_clicks_round2, n_clicks_round3):
     if not n_clicks_start:
         raise PreventUpdate
@@ -550,79 +600,198 @@ def goToRound1Tab(n_clicks_start, n_clicks_round1, n_clicks_round2, n_clicks_rou
 
 
 @app.callback([Output('wrongChoiceGrey', 'is_open'),
-               Output('rightChoiceGrey', 'is_open')],
+               Output('rightChoiceGrey', 'is_open'),
+               Output('noAttChoiceGrey', 'is_open'),
+               Output('greyAttempts', 'data'),
+               Output('greyAttempsLeft', 'children')],
               [Input('cyto_grey', 'tapNodeData'),
-               Input('rndPatients', 'data')])
-def guessGreyPatient(nodeID_label, rndChoice):
+               Input('rndPatients', 'data')],
+              [State('greyAttempts', 'data')])
+def guessGreyPatient(nodeID_label, rndChoice, greyAttempts):
     if not rndChoice:
         raise PreventUpdate
     else:
         if not nodeID_label:
             raise PreventUpdate
         if nodeID_label['id'] != rndChoice['greyP']:
-            return [True, False]
+            # Update number of attempts
+            # Give a default data dict with 0 clicks if there's no data.
+            nRound1 = greyAttempts or {'round1_attempts': 5}
+            nRound1['round1_attempts'] = nRound1['round1_attempts'] - 1
+            attLeftMsg = 'You have ' + str(nRound1['round1_attempts']) + ' attempts left'
+            if nRound1['round1_attempts'] > 0:
+                return [True, False, False, nRound1, attLeftMsg]
+            else:
+                return [False, False, True, nRound1, attLeftMsg]
+
         if nodeID_label['id'] == rndChoice['greyP']:
-            return [False, True]
+            # Update number of attempts
+            # Give a default data dict with 0 clicks if there's no data.
+            nRound1 = greyAttempts or {'round1_attempts': 5}
+            attLeftMsg = 'You have ' + str(nRound1['round1_attempts']) + ' attempts left'
+            return [False, True, False, nRound1, attLeftMsg]
 
 
-@app.callback([Output('nextRound', 'disabled')],
-              [Input('rightChoiceGrey', 'is_open')])
-def nextRoundButtonClick(rightAnswer_Ok):
-    if not rightAnswer_Ok:
-        return [True]
-    else:
+@app.callback([Output('greyButton', 'disabled')],
+              [Input('rightChoiceGrey', 'is_open'),
+               Input('noAttChoiceGrey', 'is_open')])
+def nextRound1ButtonClick(rightAnswer_Ok, noAttempts_Ok):
+    if rightAnswer_Ok or noAttempts_Ok:
         return [False]
+    else:
+        return [True]
 
 
 @app.callback([Output('wrongChoiceGrey2', 'is_open'),
-               Output('rightChoiceGrey2', 'is_open')],
+               Output('rightChoiceGrey2', 'is_open'),
+               Output('noAttChoiceGrey2', 'is_open'),
+               Output('grey2Attempts', 'data'),
+               Output('grey2AttempsLeft', 'children')
+               ],
               [Input('cyto_grey2', 'tapNodeData'),
-               Input('rndPatients', 'data')])
-def guessGreyPatient(nodeID_label, rndChoice):
+               Input('rndPatients', 'data')],
+              [State('grey2Attempts', 'data')])
+def guessGrey2Patient(nodeID_label, rndChoice, greyAttempts):
     if not rndChoice:
         raise PreventUpdate
     else:
         if not nodeID_label:
             raise PreventUpdate
         if nodeID_label['id'] != rndChoice['grey2P']:
-            return [True, False]
+            # Update number of attempts
+            # Give a default data dict with 0 clicks if there's no data.
+            nRound1 = greyAttempts or {'round1_attempts': 5}
+            nRound1['round1_attempts'] = nRound1['round1_attempts'] - 1
+            attLeftMsg = 'You have ' + str(nRound1['round1_attempts']) + ' attempts left'
+            if nRound1['round1_attempts'] > 0:
+                return [True, False, False, nRound1, attLeftMsg]
+            else:
+                return [False, False, True, nRound1, attLeftMsg]
+
         if nodeID_label['id'] == rndChoice['grey2P']:
-            return [False, True]
+            # Update number of attempts
+            # Give a default data dict with 0 clicks if there's no data.
+            nRound1 = greyAttempts or {'round1_attempts': 5}
+            attLeftMsg = 'You have ' + str(nRound1['round1_attempts']) + ' attempts left'
+            return [False, True, False, nRound1, attLeftMsg]
 
 
 @app.callback([Output('grey2Button', 'disabled')],
-              [Input('rightChoiceGrey', 'is_open')])
-def nextRoundButtonClick(rightAnswer_Ok):
-    if not rightAnswer_Ok:
-        return [True]
-    else:
+              [Input('rightChoiceGrey2', 'is_open'),
+               Input('noAttChoiceGrey2', 'is_open')])
+def nextRound2ButtonClick(rightAnswer_Ok, noAttempts_Ok):
+    if rightAnswer_Ok or noAttempts_Ok:
         return [False]
-
+    else:
+        return [True]
 
 
 @app.callback([Output('wrongChoiceColour', 'is_open'),
-               Output('rightChoiceColour', 'is_open')],
+               Output('rightChoiceColour', 'is_open'),
+               Output('noAttChoiceColour', 'is_open'),
+               Output('colourAttempts', 'data'),
+               Output('colourAttempsLeft', 'children')
+               ],
               [Input('cyto_colour', 'tapNodeData'),
-               Input('rndPatients', 'data')])
-def guessGreyPatient(nodeID_label, rndChoice):
+               Input('rndPatients', 'data')],
+              [State('colourAttempts', 'data')])
+def guessColourPatient(nodeID_label, rndChoice, colourAttempts):
     if not rndChoice:
         raise PreventUpdate
     else:
         if not nodeID_label:
             raise PreventUpdate
         if nodeID_label['id'] != rndChoice['colourP']:
-            return [True, False]
+            # Update number of attempts
+            # Give a default data dict with 0 clicks if there's no data.
+            nRound1 = colourAttempts or {'round1_attempts': 5}
+            nRound1['round1_attempts'] = nRound1['round1_attempts'] - 1
+            attLeftMsg = 'You have ' + str(nRound1['round1_attempts']) + ' attempts left'
+            if nRound1['round1_attempts'] > 0:
+                return [True, False, False, nRound1, attLeftMsg]
+            else:
+                return [False, False, True, nRound1, attLeftMsg]
+
         if nodeID_label['id'] == rndChoice['colourP']:
-            return [False, True]
+            # Update number of attempts
+            # Give a default data dict with 0 clicks if there's no data.
+            nRound1 = colourAttempts or {'round1_attempts': 5}
+            attLeftMsg = 'You have ' + str(nRound1['round1_attempts']) + ' attempts left'
+            return [False, True, False, nRound1, attLeftMsg]
 
 
 @app.callback([Output('concButton', 'disabled')],
-              [Input('rightChoiceColour', 'is_open')])
-def nextRoundButtonClick(rightAnswer_Ok):
-    if not rightAnswer_Ok:
-        return [True]
-    else:
+              [Input('rightChoiceColour', 'is_open'),
+               Input('noAttChoiceColour', 'is_open')])
+def nextRound3ButtonClick(rightAnswer_Ok, noAttempts_Ok):
+    if rightAnswer_Ok or noAttempts_Ok:
         return [False]
+    else:
+        return [True]
+
+
+# Statistics storage about the app
+@app.callback([Output('appInfo', 'data'),
+               Output('appInfoText', 'children')],
+              [Input('startButton', 'n_clicks'),
+               Input('greyButton', 'n_clicks'),
+               Input('grey2Button', 'n_clicks'),
+               Input('concButton', 'n_clicks')],
+              [State('rightChoiceGrey', 'is_open'),
+               State('noAttChoiceGrey', 'is_open'),
+               State('rightChoiceGrey2', 'is_open'),
+               State('noAttChoiceGrey2', 'is_open'),
+               State('rightChoiceColour', 'is_open'),
+               State('noAttChoiceColour', 'is_open')],
+              [State('appInfo', 'data')]
+              )
+def chooseRndCountryPatient(n_clicks_start,
+                            n_clicks_round1, n_clicks_round2, n_clicks_round3,
+                            rightGrey, wrongGrey,
+                            rightGrey2, wrongGrey2,
+                            rightColour, wrongColour,
+                            nPlayersInfo):
+    # if not n_clicks_start:
+    #    raise PreventUpdate
+    # else:
+    # Update number of participants that play and which rounds get right
+    # Give a default data dict with 0 clicks if there's no data.
+    nPlayersInfo = nPlayersInfo or {'total_players': 0,
+                                    'round1_pass': 0,
+                                    'round1_fail': 0,
+                                    'round2_pass': 0,
+                                    'round2_fail': 0,
+                                    'round3_pass': 0,
+                                    'round3_fail': 0, }
+    print(n_clicks_round1, n_clicks_round2, n_clicks_round3)
+    if n_clicks_start and not n_clicks_round1 and not n_clicks_round2 and not n_clicks_round3:
+        nPlayersInfo['total_players'] = nPlayersInfo['total_players'] + 1
+
+    if n_clicks_round1 and not n_clicks_round2 and not n_clicks_round3:
+        if rightGrey:
+            nPlayersInfo['round1_pass'] = nPlayersInfo['round1_pass'] + 1
+        if wrongGrey:
+            nPlayersInfo['round1_fail'] = nPlayersInfo['round1_fail'] + 1
+
+    if n_clicks_round2 and not n_clicks_round3:
+        if rightGrey2:
+            nPlayersInfo['round2_pass'] = nPlayersInfo['round2_pass'] + 1
+        if wrongGrey2:
+            nPlayersInfo['round2_fail'] = nPlayersInfo['round2_fail'] + 1
+
+    if n_clicks_round3:
+        if rightColour:
+            nPlayersInfo['round3_pass'] = nPlayersInfo['round3_pass'] + 1
+        if wrongColour:
+            nPlayersInfo['round3_fail'] = nPlayersInfo['round3_fail'] + 1
+
+    print(nPlayersInfo)
+    nPlayersInfoText = '**Total players**: ' + str(nPlayersInfo['total_players']) + \
+                       ' | **Round 1**: ' + str(nPlayersInfo['round1_pass']) + '/' + str(nPlayersInfo['round1_fail']) + \
+                       ' | **Round 2**: ' + str(nPlayersInfo['round2_pass']) + '/' + str(nPlayersInfo['round2_fail']) + \
+                       ' | **Round 3**: ' + str(nPlayersInfo['round3_pass']) + '/' + str(nPlayersInfo['round3_fail'])
+
+    return [nPlayersInfo, nPlayersInfoText]
 
 
 if __name__ == '__main__':
