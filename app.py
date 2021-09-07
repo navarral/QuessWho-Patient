@@ -175,9 +175,9 @@ node_stylesheet = [
         'style': {
             'background-color': '#BFD7B5',
             'label': 'data(label)',
-            'width': '115%',
-            'height': '115%',
-            'opacity': '0.01',
+            'width': '70%',
+            'height': '70%',
+            'opacity': '0.91',
         }
     }
 ]
@@ -204,7 +204,7 @@ frCard_Grid = dbc.Card(
             ),
         ], style={
             'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
-            'background-size': '80% 90%', #'37em 34em',  # '600px 550px'
+            'background-size': '80% 91%', #'37em 34em',  # '600px 550px'
             'background-repeat': 'no-repeat',
             # 'marginBottom': '-5em'
         }, ),
