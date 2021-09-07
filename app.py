@@ -269,10 +269,10 @@ frCard_Doctor = dbc.Card(
 
 firstRoundTab = dbc.Row(
     [
-        dbc.Col(width=2),
-        dbc.Col(frCard_Grid, width=5),
-        dbc.Col(frCard_Doctor, width=3),
-        dbc.Col(width=2),
+        #dbc.Col(width=0),
+        dbc.Col(frCard_Grid, width=8),
+        dbc.Col(frCard_Doctor, width=4),
+        #dbc.Col(width=10),
     ]
 )
 
