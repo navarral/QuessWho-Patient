@@ -269,10 +269,8 @@ frCard_Doctor = dbc.Card(
 
 firstRoundTab = dbc.Row(
     [
-        #dbc.Col(width=0),
         dbc.Col(frCard_Grid, width=8),
         dbc.Col(frCard_Doctor, width=4),
-        #dbc.Col(width=10),
     ]
 )
 
@@ -360,10 +358,8 @@ srCard_Doctor = dbc.Card(
 
 secondRoundTab = dbc.Row(
     [
-        dbc.Col(width=2),
-        dbc.Col(srCard_Grid, width=5),
-        dbc.Col(srCard_Doctor, width=3),
-        dbc.Col(width=2),
+        dbc.Col(srCard_Grid, width=8),
+        dbc.Col(srCard_Doctor, width=4),
     ]
 )
 
@@ -450,10 +446,8 @@ trCard_Doctor = dbc.Card(
 
 thirdRoundTab = dbc.Row(
     [
-        dbc.Col(width=2),
-        dbc.Col(trCard_Grid, width=5),
-        dbc.Col(trCard_Doctor, width=3),
-        dbc.Col(width=2),
+        dbc.Col(trCard_Grid, width=8),
+        dbc.Col(trCard_Doctor, width=4),
     ]
 )
 
