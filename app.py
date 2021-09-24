@@ -124,33 +124,33 @@ introTab = html.Div([
 nodes = [
     {
         'data': {'id': short},
-        'position': {'x': nx, 'y': ny}
+        'position': {'x': col * 100 - 60, 'y': row * 100 - 30}
     }
-    for short, nx, ny in (
+    for short, row, col in (
         # First row
-        ('a11', 60, 80),
-        ('a12', 60 + 118 * 1, 80),
-        ('a13', 60 + 118 * 2, 80),
-        ('a14', 60 + 118 * 3, 80),
-        ('a15', 60 + 118 * 4, 80),
+        ('a11', 1, 1),
+        ('a12', 1, 2),
+        ('a13', 1, 3),
+        ('a14', 1, 4),
+        ('a15', 1, 5),
         # Second row
-        ('a21', 60, 80 + 128 * 1),
-        ('a22', 60 + 118 * 1, 80 + 128 * 1),
-        ('a23', 60 + 118 * 2, 80 + 128 * 1),
-        ('a24', 60 + 118 * 3, 80 + 128 * 1),
-        ('a25', 60 + 118 * 4, 80 + 128 * 1),
+        ('a21', 2, 1),
+        ('a22', 2, 2),
+        ('a23', 2, 3),
+        ('a24', 2, 4),
+        ('a25', 2, 5),
         # Third row
-        ('a31', 60, 80 + 130 * 2),
-        ('a32', 60 + 118 * 1, 80 + 130 * 2),
-        ('a33', 60 + 118 * 2, 80 + 130 * 2),
-        ('a34', 60 + 118 * 3, 80 + 130 * 2),
-        ('a35', 60 + 118 * 4, 80 + 130 * 2),
+        ('a31', 3, 1),
+        ('a32', 3, 2),
+        ('a33', 3, 3),
+        ('a34', 3, 4),
+        ('a35', 3, 5),
         # Forth row
-        ('a41', 60, 80 + 132 * 3),
-        ('a42', 60 + 119 * 1, 80 + 132 * 3),
-        ('a43', 60 + 119 * 2, 80 + 132 * 3),
-        ('a44', 60 + 119 * 3, 80 + 132 * 3),
-        ('a45', 60 + 119 * 4, 80 + 132 * 3),
+        ('a41', 4, 1),
+        ('a42', 4, 2),
+        ('a43', 4, 3),
+        ('a44', 4, 4),
+        ('a45', 4, 5),
     )
 ]
 
@@ -175,8 +175,8 @@ node_stylesheet = [
         'style': {
             'background-color': '#BFD7B5',
             'label': 'data(label)',
-            'width': '115%',
-            'height': '115%',
+            'width': '70vw',
+            'height': '70vh',
             'opacity': '0.01',
         }
     }
@@ -193,6 +193,8 @@ frCard_Grid = dbc.Card(
         [html.Div([
             cyto.Cytoscape(
                 id='cyto_grey',
+                #style={'width': '100vw', 'height': '100vh'},
+                style={'width': '30em', 'height': '27em'},
                 elements=nodes,
                 autoungrabify=False,
                 autolock=True,
@@ -204,9 +206,9 @@ frCard_Grid = dbc.Card(
             ),
         ], style={
             'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
-            'background-size': '80% 90%', #'37em 34em',  # '600px 550px'
+            'background-size': '30em 27em',  # '600px 550px' #
             'background-repeat': 'no-repeat',
-            # 'marginBottom': '-5em'
+
         }, ),
         ]
     ),
@@ -267,10 +269,8 @@ frCard_Doctor = dbc.Card(
 
 firstRoundTab = dbc.Row(
     [
-        dbc.Col(width=1),
-        dbc.Col(frCard_Grid, width=7),
-        dbc.Col(frCard_Doctor, width=3),
-        dbc.Col(width=1),
+        dbc.Col(frCard_Grid, width=8),
+        dbc.Col(frCard_Doctor, width=4),
     ]
 )
 
@@ -281,6 +281,7 @@ srCard_Grid = dbc.Card(
                 cyto.Cytoscape(
                     id='cyto_grey2',
                     elements=nodes,
+                    style={'width': '30em', 'height': '27em'},
                     autoungrabify=False,
                     autolock=True,
                     zoom=1,
@@ -291,7 +292,7 @@ srCard_Grid = dbc.Card(
                 ),
             ], style={
                 'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid_Grey.jpg)',
-                'background-size': '80% 90%', #'37em 34em',  # '600px 550px'
+                'background-size': '30em 27em',  # '600px 550px'
                 'background-repeat': 'no-repeat',
                 # 'marginBottom': '-5em'
             }, ),
@@ -357,10 +358,8 @@ srCard_Doctor = dbc.Card(
 
 secondRoundTab = dbc.Row(
     [
-        dbc.Col(width=1),
-        dbc.Col(srCard_Grid, width=7),
-        dbc.Col(srCard_Doctor, width=3),
-        dbc.Col(width=1),
+        dbc.Col(srCard_Grid, width=8),
+        dbc.Col(srCard_Doctor, width=4),
     ]
 )
 
@@ -372,6 +371,7 @@ trCard_Grid = dbc.Card(
                     id='cyto_colour',
                     elements=nodes,
                     autoungrabify=False,
+                    style={'width': '30em', 'height': '27em'},
                     autolock=True,
                     zoom=1,
                     minZoom=1,
@@ -381,7 +381,7 @@ trCard_Grid = dbc.Card(
                 ),
             ], style={
                 'background-image': 'url(https://raw.githubusercontent.com/navarral/QuessWho-Patient/master/GuessWho_Grid.jpg)',
-                'background-size': '80% 90%', # '37em 34em',  # '600px 550px'
+                'background-size': '30em 27em',  # '600px 550px'
                 'background-repeat': 'no-repeat',
                 # 'marginBottom': '-5em'
             }, ),
@@ -446,10 +446,8 @@ trCard_Doctor = dbc.Card(
 
 thirdRoundTab = dbc.Row(
     [
-        dbc.Col(width=1),
-        dbc.Col(trCard_Grid, width=7),
-        dbc.Col(trCard_Doctor, width=3),
-        dbc.Col(width=1),
+        dbc.Col(trCard_Grid, width=8),
+        dbc.Col(trCard_Doctor, width=4),
     ]
 )
 
@@ -563,14 +561,18 @@ def chooseRndCountryPatient(n_clicks_start):
 
         hintGrey = '''
         Hi! All I know is that the patient is a **teenager or adult** that lives in the **''' + rndDict['greyC'] + ''' country** ...
-
+        
+        Oops! The colour is protected in this round ...
+        
         Please click on the faces on the left to help me find the patient!'''
 
         hintGrey2 = '''
         Hi! All I know is that the patient is a **''' + rndDict[
             'grey2S'] + '''** **teenager or adult** that lives in the **''' + \
                     rndDict['grey2C'] + ''' country** ...
-
+        
+        Oops! The colour is protected again in this round ...
+        
         Please click on the faces on the left to help me find the patient!'''
 
         hintColour = '''
@@ -614,6 +616,7 @@ def guessGreyPatient(nodeID_label, rndChoice, greyAttempts):
         if not nodeID_label:
             raise PreventUpdate
         if nodeID_label['id'] != rndChoice['greyP']:
+            print(nodeID_label['id'])
             # Update number of attempts
             # Give a default data dict with 0 clicks if there's no data.
             nRound1 = greyAttempts or {'round1_attempts': 5}
