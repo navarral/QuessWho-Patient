@@ -561,14 +561,18 @@ def chooseRndCountryPatient(n_clicks_start):
 
         hintGrey = '''
         Hi! All I know is that the patient is a **teenager or adult** that lives in the **''' + rndDict['greyC'] + ''' country** ...
-
+        
+        Oops! The colour is protected in this round ...
+        
         Please click on the faces on the left to help me find the patient!'''
 
         hintGrey2 = '''
         Hi! All I know is that the patient is a **''' + rndDict[
             'grey2S'] + '''** **teenager or adult** that lives in the **''' + \
                     rndDict['grey2C'] + ''' country** ...
-
+        
+        Oops! The colour is protected again in this round ...
+        
         Please click on the faces on the left to help me find the patient!'''
 
         hintColour = '''
